@@ -22,6 +22,7 @@ function handleEqual()
     if (savedNumber!=0 && operator!="")
     {
         operatorChosen=true;
+        equalsChosen=true; //If this is true, it means the last operator chosen was "equals"
         savedNumber=handleOperation(savedNumber, screenNumber, operator);
         document.getElementById('output').value=savedNumber;
     }
@@ -56,16 +57,20 @@ function notANumber(input)
     {
         if (input=='.')
             handleDecimal();
-        if (input=='all-clear')
+        else if (input=='all-clear')
             handleClear();
-        if (input=='=')
+        else if (input=='=')
             handleEqual();
     }
     else
     {
         if (operatorChosen==true)
         {
-            
+            if (equalsChosen=true)
+            {
+                operator=input;
+                equalsChosen=false;
+            }
         }
         else if (savedNumber==0)
         {
@@ -76,6 +81,7 @@ function notANumber(input)
         else
         {
             handleEqual();
+            operator=input;
         }
     }
 }
@@ -111,7 +117,7 @@ function calculate(input)
 
 
 let calculator = document.querySelector('.calculator');
-let buttons = calculator.querySelectorAll('button'),screenNumber=0,operator, savedNumber=0,operatorChosen=false, pointInNumber=false;
+let buttons = calculator.querySelectorAll('button'),screenNumber=0,operator, savedNumber=0,operatorChosen=false, pointInNumber=false, equalsChosen=false;
 buttons.forEach((button) => {
     button.addEventListener('click', () => {
         calculate(button.value);
