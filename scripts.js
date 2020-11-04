@@ -1,6 +1,7 @@
 
 function handleDecimal()
 {
+    allowBackspace=true;
     if (pointInNumber==false)
         {
         pointInNumber=true;
@@ -10,6 +11,7 @@ function handleDecimal()
 }
 function handleClear()
 {
+    allowBackspace=true;
     screenNumber=0;
     operator="";
     savedNumber=0;
@@ -23,8 +25,17 @@ function handleEqual()
     {
         operatorChosen=true;
         equalsChosen=true; //If this is true, it means the last operator chosen was "equals"
+        allowBackspace=false;
         savedNumber=handleOperation(savedNumber, screenNumber, operator);
         document.getElementById('output').value=savedNumber;
+    }
+}
+function handleBackspace()
+{
+    if (allowBackspace==true)
+    {
+        screenNumber=parseInt(screenNumber/10);
+        document.getElementById('output').value=screenNumber;
     }
 }
 function handleOperation(num1,num2,operator)
@@ -61,6 +72,8 @@ function notANumber(input)
             handleClear();
         else if (input=='=')
             handleEqual();
+        else if (input=='backspace')
+            handleBackspace();
     }
     else
     {
@@ -93,6 +106,7 @@ function calculate(input)
     }
     else
     {
+        allowBackspace=true;
         if (operatorChosen==true)
         {
             operatorChosen=false;
@@ -117,7 +131,7 @@ function calculate(input)
 
 
 let calculator = document.querySelector('.calculator');
-let buttons = calculator.querySelectorAll('button'),screenNumber=0,operator, savedNumber=0,operatorChosen=false, pointInNumber=false, equalsChosen=false;
+let buttons = calculator.querySelectorAll('button'),screenNumber=0,operator, savedNumber=0,operatorChosen=false, pointInNumber=false, equalsChosen=false, allowBackspace=true;
 buttons.forEach((button) => {
     button.addEventListener('click', () => {
         calculate(button.value);
