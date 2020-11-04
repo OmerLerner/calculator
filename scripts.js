@@ -1,13 +1,27 @@
 
 function handleDecimal()
 {
-    allowBackspace=true;
-    if (pointInNumber==false)
+    if (equalsChosen==false)
+    {
+        if (operatorChosen==true && decimalInNumber==false)
         {
-        pointInNumber=true;
-        screenNumber+=".";
-        document.getElementById('output').value=screenNumber;
-        }   
+            savedNumber=screenNumber;
+            operatorChosen=false;
+            screenNumber=0;
+            decimalFirst=true;
+            decimalInNumber=true;
+        }
+        else if (decimalInNumber==false)
+        {
+                decimalInNumber=true;
+                if (screenNumber==0)
+                {
+                    decimalFirst=true;
+                }
+                screenNumber+=".";
+                document.getElementById('output').value=screenNumber;
+        }
+    }  
 }
 function handleClear()
 {
@@ -16,7 +30,8 @@ function handleClear()
     operator="";
     savedNumber=0;
     operatorChosen=false;
-    pointInNumber=false;
+    decimalInNumber=false;
+    decimalFirst=false;
     document.getElementById('output').value=screenNumber;
 }
 function handleEqual()
@@ -26,6 +41,7 @@ function handleEqual()
         operatorChosen=true;
         equalsChosen=true; //If this is true, it means the last operator chosen was "equals"
         allowBackspace=false;
+        decimalInNumber=false;
         savedNumber=handleOperation(savedNumber, screenNumber, operator);
         document.getElementById('output').value=savedNumber;
     }
@@ -34,7 +50,9 @@ function handleBackspace()
 {
     if (allowBackspace==true)
     {
-        screenNumber=parseInt(screenNumber/10);
+        let numberString=screenNumber.toString();
+        numberString=numberString.slice(0, -1);
+        screenNumber=parseFloat(numberString);
         document.getElementById('output').value=screenNumber;
     }
 }
@@ -56,7 +74,17 @@ function handleOperation(num1,num2,operator)
         return num1/num2;
         
 }
-
+function handleContinuationOfOperators()
+{
+    if (savedNumber!=0 && operator!="")
+    {
+        operatorChosen=true;
+        allowBackspace=false;
+        decimalInNumber=false;
+        savedNumber=handleOperation(savedNumber, screenNumber, operator);
+        document.getElementById('output').value=savedNumber;
+    }
+}
 
 function notAnOperator(input) //Return true if input is not a basic operator
 {
@@ -90,10 +118,11 @@ function notANumber(input)
         operator=input;
         savedNumber=screenNumber;
         operatorChosen=true;
+        decimalInNumber=false;
         }
         else
         {
-            handleEqual();
+            handleContinuationOfOperators();
             operator=input;
         }
     }
@@ -106,23 +135,38 @@ function calculate(input)
     }
     else
     {
-        allowBackspace=true;
-        if (operatorChosen==true)
+        if (equalsChosen==true)
         {
-            operatorChosen=false;
-            screenNumber=0;
-        }
-        if (screenNumber==0)
-        {
-            screenNumber=input;
-            document.getElementById('output').value=screenNumber;
+
         }
         else
         {
-            screenNumber+=input;
-            document.getElementById('output').value=screenNumber;  
-        }    
-        
+            allowBackspace=true;
+            if (operatorChosen==true)
+            {
+                operatorChosen=false;
+                decimalInNumber=false;
+                screenNumber=0;
+            }
+            if (screenNumber==0)
+            {
+                if (decimalFirst==true)
+                {
+                    screenNumber=input/10;
+                    decimalFirst=false;
+                }
+                else
+                {
+                    screenNumber=input;
+                }
+                document.getElementById('output').value=screenNumber;
+            }
+            else
+            {
+                screenNumber+=input;
+                document.getElementById('output').value=screenNumber;  
+            }   
+        } 
     }
 }
 
@@ -131,7 +175,7 @@ function calculate(input)
 
 
 let calculator = document.querySelector('.calculator');
-let buttons = calculator.querySelectorAll('button'),screenNumber=0,operator, savedNumber=0,operatorChosen=false, pointInNumber=false, equalsChosen=false, allowBackspace=true;
+let buttons = calculator.querySelectorAll('button'),screenNumber=0,operator, savedNumber=0,operatorChosen=false, decimalInNumber=false, equalsChosen=false, allowBackspace=true, decimalFirst=false;
 buttons.forEach((button) => {
     button.addEventListener('click', () => {
         calculate(button.value);
