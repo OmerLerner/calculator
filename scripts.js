@@ -19,9 +19,12 @@ function handleClear()
 }
 function handleEqual()
 {
-    operatorChosen=true;
-    savedNumber=handleOperation(savedNumber, screenNumber, operator);
-    document.getElementById('output').value=savedNumber;
+    if (savedNumber!=0 && operator!="")
+    {
+        operatorChosen=true;
+        savedNumber=handleOperation(savedNumber, screenNumber, operator);
+        document.getElementById('output').value=savedNumber;
+    }
 }
 function handleOperation(num1,num2,operator)
 {
@@ -31,7 +34,14 @@ function handleOperation(num1,num2,operator)
         return num1-num2;
     else if (operator=="*")
         return num1*num2;
-    return num1/num2;
+    else if (operator=="/" && num2==0)
+    {
+        window.alert("Yeah, nah, don't divide by 0.");
+        handleClear();
+        return 0;
+    }
+    else
+        return num1/num2;
         
 }
 
