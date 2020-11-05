@@ -5,11 +5,12 @@ function handleDecimal()
     {
         if (operatorChosen==true && decimalInNumber==false)
         {
-            savedNumber=screenNumber;
-            operatorChosen=false;
+            if (savedNumber!=0)
+            {
+                handleContinuationOfOperators;
+            }
+            handleBooleanSwitches(false, null, null, true, true);
             screenNumber=0;
-            decimalFirst=true;
-            decimalInNumber=true;
         }
         else if (decimalInNumber==false)
         {
@@ -23,25 +24,43 @@ function handleDecimal()
         }
     }  
 }
+function handleBooleanSwitches(operator, equals, allow, decimal1st, decimalInNum)
+{
+    if (operator!=null)
+    {
+        operatorChosen=operator;
+    }
+    if (equals!=null)
+    {
+        equalsChosen=equals;
+    }
+    if (allow!=null)
+    {
+        allowBackspace=allow;
+    }
+    if (decimal1st!=null)
+    {
+        decimalFirst=decimal1st;
+    }
+    if (decimalInNum!=null)
+    {
+        decimalInNumber=decimalInNum;
+    }
+}
 function handleClear()
 {
-    allowBackspace=true;
     screenNumber=0;
     operator="";
     savedNumber=0;
-    operatorChosen=false;
-    decimalInNumber=false;
-    decimalFirst=false;
+    handleBooleanSwitches(false, false, false, false, false)
+
     document.getElementById('output').value=screenNumber;
 }
 function handleEqual()
 {
     if (savedNumber!=0 && operator!="")
     {
-        operatorChosen=true;
-        equalsChosen=true; //If this is true, it means the last operator chosen was "equals"
-        allowBackspace=false;
-        decimalInNumber=false;
+        handleBooleanSwitches(true, true, false, null, false)
         savedNumber=handleOperation(savedNumber, screenNumber, operator);
         document.getElementById('output').value=savedNumber;
     }
@@ -78,9 +97,8 @@ function handleContinuationOfOperators()
 {
     if (savedNumber!=0 && operator!="")
     {
-        operatorChosen=true;
-        allowBackspace=false;
-        decimalInNumber=false;
+
+        handleBooleanSwitches(true, null, false, null, false)
         savedNumber=handleOperation(savedNumber, screenNumber, operator);
         document.getElementById('output').value=savedNumber;
     }
@@ -105,9 +123,9 @@ function notANumber(input)
     }
     else
     {
-        if (operatorChosen==true)
+        if (operatorChosen==true) //An operator is already stored in memory
         {
-            if (equalsChosen=true)
+            if (equalsChosen=true) //The operator is an equals sign
             {
                 operator=input;
                 equalsChosen=false;
@@ -157,7 +175,14 @@ function calculate(input)
                 }
                 else
                 {
-                    screenNumber=input;
+                    if (operator=="-" && savedNumber==0)
+                    {
+                        screenNumber=input/-1;
+                    }
+                    else
+                    {
+                        screenNumber=input;
+                    }
                 }
                 document.getElementById('output').value=screenNumber;
             }
