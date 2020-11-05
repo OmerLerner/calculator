@@ -24,30 +24,30 @@ function handleDecimal()
         }
     }  
 }
-function handleBooleanSwitches(operator, equals, allow, decimal1st, decimalInNum)
+function handleBooleanSwitches(operator, equals, allow, decimal1st, decimalInNum) //Recieves boolean or null, changes the switch accordingly
 {
     if (operator!=null)
     {
-        operatorChosen=operator;
+        operatorChosen=operator; //True if the last input was an operator
     }
     if (equals!=null)
     {
-        equalsChosen=equals;
+        equalsChosen=equals; //True if the last input was an '=' operator
     }
     if (allow!=null)
     {
-        allowBackspace=allow;
+        allowBackspace=allow; //True if you can use backspace button (Can't use it after equals)
     }
     if (decimal1st!=null)
     {
-        decimalFirst=decimal1st;
+        decimalFirst=decimal1st; //True if the first input for a given number is "." (Allows user to type .0314....)
     }
     if (decimalInNum!=null)
     {
-        decimalInNumber=decimalInNum;
+        decimalInNumber=decimalInNum; //True if a decimal number exists, prevents a number from having multiple decimals
     }
 }
-function handleClear()
+function handleClear() //Resets all values to default
 {
     screenNumber=0;
     operator="";
@@ -56,7 +56,7 @@ function handleClear()
 
     document.getElementById('output').value=screenNumber;
 }
-function handleEqual()
+function handleEqual() //Changes switches accordingly, calculates the output and displays it on the calculator
 {
     if (savedNumber!=0 && operator!="")
     {
@@ -65,7 +65,7 @@ function handleEqual()
         document.getElementById('output').value=savedNumber;
     }
 }
-function handleBackspace()
+function handleBackspace() //Erases the last number or decimal inputted to the calculator
 {
     if (allowBackspace==true)
     {
@@ -75,7 +75,7 @@ function handleBackspace()
         document.getElementById('output').value=screenNumber;
     }
 }
-function handleOperation(num1,num2,operator)
+function handleOperation(num1,num2,operator) //Calculates num1 and num2 with the operator recieved by the function, returns the value
 {
     if (operator=='+')
         return +num1 + +num2;
@@ -83,7 +83,7 @@ function handleOperation(num1,num2,operator)
         return num1-num2;
     else if (operator=="*")
         return num1*num2;
-    else if (operator=="/" && num2==0)
+    else if (operator=="/" && num2==0) //Prevents calculator from crashing if user divides by 0
     {
         window.alert("Yeah, nah, don't divide by 0.");
         handleClear();
@@ -93,12 +93,12 @@ function handleOperation(num1,num2,operator)
         return num1/num2;
         
 }
-function handleContinuationOfOperators()
+function handleContinuationOfOperators() //Changes switches accordingly and calculates the number based on the saved numbers & operator
 {
     if (savedNumber!=0 && operator!="")
     {
 
-        handleBooleanSwitches(true, null, false, null, false)
+        handleBooleanSwitches(true, null, false, null, false);
         savedNumber=handleOperation(savedNumber, screenNumber, operator);
         document.getElementById('output').value=savedNumber;
     }
@@ -131,7 +131,7 @@ function notANumber(input)
                 equalsChosen=false;
             }
         }
-        else if (savedNumber==0)
+        else if (savedNumber==0) //Case for the first operator being inputted in the calculator
         {
         operator=input;
         savedNumber=screenNumber;
@@ -140,7 +140,7 @@ function notANumber(input)
         }
         else
         {
-            handleContinuationOfOperators();
+            handleContinuationOfOperators(); //Calculates savedNumber and screenNumber with the last operator, doesn't change 'equalsChosen' to True to prevent errors
             operator=input;
         }
     }
@@ -153,7 +153,7 @@ function calculate(input)
     }
     else
     {
-        if (equalsChosen==true)
+        if (equalsChosen==true) //If equals is the last operator chosen, we need to wait for another operator before continuing calculations
         {
 
         }
@@ -200,7 +200,11 @@ function calculate(input)
 
 
 let calculator = document.querySelector('.calculator');
-let buttons = calculator.querySelectorAll('button'),screenNumber=0,operator, savedNumber=0,operatorChosen=false, decimalInNumber=false, equalsChosen=false, allowBackspace=true, decimalFirst=false;
+let buttons = calculator.querySelectorAll('button'),
+screenNumber=0,
+savedNumber=0,
+operator, 
+operatorChosen=false, decimalInNumber=false, equalsChosen=false, allowBackspace=true, decimalFirst=false;
 buttons.forEach((button) => {
     button.addEventListener('click', () => {
         calculate(button.value);
